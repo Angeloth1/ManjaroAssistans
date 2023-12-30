@@ -7,19 +7,12 @@ import pickle
 def create_chatbot():
     chatbot = ChatBot('ManjaroAssistan')
     trainer = ChatterBotCorpusTrainer(chatbot)
-
-    # You can train the chatbot with additional data if needed
-    # trainer.train("chatterbot.corpus.english")
+    trainer.train("chatterbot.corpus.english")
 
     return chatbot
 
-def read_api_key():
-    api_key_file = os.path.join(os.path.dirname(__file__), 'apikey.txt')
-    with open(api_key_file, 'r') as f:
-        return f.read().strip()
-
 def create_chat_prompt(user_input):
-    return f"You:{user_input}\nManjaroAssistan:"
+    return f"You: {user_input}\nManjaroAssistan:"
 
 def save_chat_history(chat_history):
     with open('chat_history.pkl', 'wb') as f:
@@ -48,17 +41,20 @@ def chat_menu(chatbot):
 
     while True:
         print("""
-  __  __            _                  _          _    _             
- |  \/  |__ _ _ _  (_)__ _ _ _ ___    /_\   _____(_)__| |_ __ _ _ _  
- | |\/| / _` | ' \ | / _` | '_/ _ \  / _ \ (_-<_-< (_-<  _/ _` | ' \ 
- |_|  |_\__,_|_||_|/ \__,_|_| \___/ /_/ \_\/__/__/_/__/\__\__,_|_||_|
-                 |__/                                                
+        888                                888                                 d8b          888                      
+        888                                888                                 Y8P          888                      
+        888                                888                                              888                      
+        888      .d88b.   .d8888b  8888b.  888       8888b.  .d8888b  .d8888b  888 .d8888b  888888  8888b.  88888b.  
+        888     d88""88b d88P"        "88b 888          "88b 88K      88K      888 88K      888        "88b 888 "88b 
+        888     888  888 888      .d888888 888      .d888888 "Y8888b. "Y8888b. 888 "Y8888b. 888    .d888888 888  888 
+        888     Y88..88P Y88b.    888  888 888      888  888      X88      X88 888      X88 Y88b.  888  888 888  888 
+        88888888 "Y88P"   "Y8888P "Y888888 888      "Y888888  88888P'  88888P' 888  88888P'  "Y888 "Y888888 888  888 
+                                                                                                             
+         +-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+-+-+-+-+
+         |p|o|w|e|r|e|d| |b|y| |c|h|a|t|t|e|r|b|o|t|
+         +-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+-+-+-+-+
+        """)
 
- +-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+-+-+-+-+
- |p|o|w|e|r|e|d| |b|y| |c|h|a|t|t|e|r|b|o|t|
- +-+-+-+-+-+-+-+ +-+-+ +-+-+-+-+-+-+-+-+-+-+
-
-""")
         print("1. New Chat")
         print("2. Chat History")
         print("3. Exit")
@@ -76,7 +72,6 @@ def chat_menu(chatbot):
         if choice == "1":
             chat_name = input("Enter a name for your new chat: ")
             chat_history.append((chat_name, []))
-            chat_history[-1][1].append((choice, []))
             save_chat_history(chat_history)
 
             while True:
@@ -89,6 +84,7 @@ def chat_menu(chatbot):
                 bot_response = chatbot.get_response(user_input)
                 print(f"ManjaroAssistan: {bot_response}")
                 chat_history[-1][1].append((user_input, str(bot_response)))
+                save_chat_history(chat_history)
 
         elif choice == "2":
             print_chat_history(chat_history)
@@ -108,18 +104,19 @@ def chat_menu(chatbot):
                     chat_options = input("Options: (C)ontinue, (D)elete, (0)Back: ")
 
                     if chat_options.upper() == "C":
-                        continue
+                        break
 
                     elif chat_options.upper() == "D":
                         delete_chat_history(chat_history, chat_idx)
+                        break
 
                 except (ValueError, IndexError):
                     print("Invalid input. Please enter a valid input.")
 
         elif choice == "3":
             print("Exiting Manjaro Assistans. Goodbye")
+            break
 
-if __name__ == "__main__":
-    api_key = read_api_key()
+if __name__ == "__main__": 
     chatbot = create_chatbot()
     chat_menu(chatbot)
